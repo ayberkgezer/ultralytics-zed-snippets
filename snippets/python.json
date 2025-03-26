@@ -1,0 +1,911 @@
+{
+  "Ultralytics Auto Annotate": {
+    "prefix": "ultra.util-auto-annotate",
+    "body": [
+      "from ultralytics.data.annotator import auto_annotate",
+      "",
+      "auto_annotate(data=\"$1\", det_model=\"yolo11${2|n,s,m,l,x|}.pt\", sam_model=\"${3|sam_b,sam_l,mobile_sam,FastSAM-s,FastSAM-x|}.pt\", device=\"${4|cuda,cpu|}\", output_dir=\"$5\")",
+      "# Docs example https://docs.ultralytics.com/usage/simple-utilities/#auto-labeling-annotations",
+      "# auto_annotate function reference https://docs.ultralytics.com/reference/data/annotator/#ultralytics.data.annotator.auto_annotate"
+    ],
+    "description": "Use Ultralytics auto_annotate function to generate annotations."
+  },
+
+  "Ultralytics Plot Annotator": {
+    "prefix": "ultra.util-annotator",
+    "body": [
+      "from ultralytics.utils.plotting import Annotator, colors",
+      "",
+      "$0# ${1:image}  # numpy.ndarray",
+      "# ${2:xyxy_boxes}  # numpy.ndarray",
+      "# ${3:class_idx}  # list[int], same order as boxes",
+      "# names: dict = ${4:model}.names.copy()",
+      "",
+      "ann = Annotator(",
+      "    im=$1,",
+      "    line_width=${6:None},  # int",
+      "    font_size=${7:None},  # int",
+      "    font=\"${8:Arial.ttf}\",  # str",
+      "    pil=${9:False},  # bool",
+      "    example=\"${10:abc}\",  # str",
+      ")",
+      "",
+      "for n, box in enumerate(${2}):",
+      "    label = f\"{names[n]}\"",
+      "    ann.box_label(",
+      "        box,",
+      "        label,",
+      "        color=colors(class_idx[n], bgr=True),",
+      "        text_color=(${11:255},${12:255},${13:255}),",
+      "        rotated=${14:False}",
+      "    )",
+      "",
+      "img_annotated = ann.result()",
+      "# Docs example https://docs.ultralytics.com/usage/simple-utilities/#drawing-annotations",
+      "# Annotator class reference https://docs.ultralytics.com/reference/utils/plotting/#ultralytics.utils.plotting.Annotator"
+    ],
+    "description": "Use Ultralytics Annotator class to draw box annotations."
+  },
+
+  "Ultralytics Make Divisible": {
+    "prefix": "ultra.util-make-divisible",
+    "body": [
+      "from ultralytics.utils.ops import make_divisible",
+      "",
+      "make_divisible(${1:width}, ${2:divisor})",
+      "# docs examples https://docs.ultralytics.com/usage/simple-utilities/#make-divisible",
+      "# make_divisible function reference https://docs.ultralytics.com/reference/utils/ops/#ultralytics.utils.ops.make_divisible"
+    ],
+    "description": "Use Ultralytics make_divisible function to make a number divisible by another."
+  },
+
+  "Ultralytics Set Callback": {
+    "prefix": "ultra.util-callback",
+    "body": [
+      "${1:model}.add_callback(\"${2|on_pretrain_routine_start,on_pretrain_routine_end,on_train_start,on_train_epoch_start,on_train_batch_start,optimizer_step,on_before_zero_grad,on_train_batch_end,on_train_epoch_end,on_fit_epoch_end,on_model_save,on_train_end,on_params_update,teardown,on_val_start,on_val_batch_start,on_val_batch_end,on_val_end,on_predict_start,on_predict_batch_start,on_predict_postprocess_end,on_predict_batch_end,on_predict_end,on_export_start,on_export_end|}\", ${3:callable})",
+      "# See docs page on callbacks https://docs.ultralytics.com/usage/callbacks/ for more information"
+    ],
+    "description": "Shortcut for adding custom model callback for a defined function."
+  },
+  "Ultralytics Results Class Names": {
+    "prefix": "ultra.result-class-str",
+    "body": [
+      "# Define model",
+      "",
+      "names: dict[int, str] = ${1:model}.names.copy()",
+      "",
+      "# Execute model inference here",
+      "",
+      "class_names: list[str] = [names[int(c)] for c in ${2:result}.${3|boxes,masks,keypoints,probs,obb|}.cls.tolist()]"
+    ],
+    "description": "Convert class indices to class string names for a single image result."
+  },
+
+  "Ultralytics Results Data": {
+    "prefix": "ultra.result-data",
+    "body": [
+      "data = ${1:result}.${2|boxes,masks,keypoints,probs,obb|}.data  # torch.Tensor array",
+      "# reference https://docs.ultralytics.com/modes/predict/#working-with-results"
+    ],
+    "description": "Get result data array of detections from a single image result."
+  },
+
+  "Ultralytics YOLO Loop Results": {
+    "prefix": "ultra.result-loop",
+    "body": [
+      "# reference https://docs.ultralytics.com/modes/predict/#working-with-results",
+      "",
+      "for result in ${1:results}:",
+      "    result.${2|boxes,masks,keypoints,probs,obb|}.data  # torch.Tensor array"
+    ],
+    "description": "Iterate prediction results from an Ultralytics model."
+  },
+
+  "Ultralytics Results xyxy Boxes": {
+    "prefix": "ultra.result-box-xyxy",
+    "body": [
+      "xyxy = ${1:result}.${2|boxes,obb|}.xyxy  # torch.Tensor array",
+      "# reference https://docs.ultralytics.com/modes/predict/#boxes"
+    ],
+    "description": "Get pixel-value (x1, y1, x2, y2) bounding box coordinates from a single image result."
+  },
+
+  "Ultralytics Results xywh Boxes": {
+    "prefix": "ultra.result-box-xywh",
+    "body": [
+      "xywh = ${1:result}.boxes.xywh  # torch.Tensor array",
+      "# reference https://docs.ultralytics.com/modes/predict/#boxes"
+    ],
+    "description": "Get pixel-value (x-center, y-center, w, h) bounding box coordinates from a single image result."
+  },
+
+  "Ultralytics Results Binary Mask": {
+    "prefix": "ultra.result-mask-binary",
+    "body": [
+      "mask = ${1:result}.masks.data  # torch.Tensor array",
+      "# NOTE will require resizing to original image dimensions"
+    ],
+    "description": "Get binary segmentation masks from a single image result. NOTE: [N, H, W] shape, with inference H, W dimensions."
+  },
+
+  "Ultralytics Results Mask Coordinates": {
+    "prefix": "ultra.result-mask-contours",
+    "body": [
+      "masks: list = ${1:result}.masks.${2|xy,xyn|}  # list of numpy.ndarray",
+      "# NOTE choose xy for pixel value coordinates or xyn for normalized coordinates",
+      "# reference https://docs.ultralytics.com/modes/predict/#masks"
+    ],
+    "description": "Get segmentation contours with pixel value xy or normalized xyn coordinates."
+  },
+
+  "Ultralytics Results OBB xywhr": {
+    "prefix": "ultra.result-obb-xywhr",
+    "body": [
+      "rot_boxes = ${1:result}.obb.xywhr  # torch.Tensor array",
+      "# reference https://docs.ultralytics.com/modes/predict/#obb"
+    ],
+    "description": "Get OBB rotated bounding boxes in pixel value [x-center, y-center, width, height, rotation] coordinates as torch.Tensor array."
+  },
+
+  "Ultralytics Results Original Image": {
+    "prefix": "ultra.result-orig-image",
+    "body": "orig_image = ${1:result}.orig_img  # torch.Tensor array$0",
+    "description": "Get original image from a single image result."
+  },
+  "Ultralytics YOLO Model": {
+    "prefix": "ultra.yolo-model",
+    "body": [
+      "'''",
+      "⚠ NOTE: selections do not prevent you from specifying a combination for a model that doesn't exist.",
+      "Reference the documentation for valid model specifications: https://docs.ultralytics.com/models",
+      "'''",
+      "${1:model} = YOLO(\"yolo${2|11,v8,v5,v9,v10|}${3|n,s,m,l,x,c,e|}${4|.,-cls.,-seg.,-obb.,-pose.,-world.,-worldv2.|}pt\")",
+      "# reference https://docs.ultralytics.com/models",
+      "$0"
+    ],
+    "description": "Initialize YOLO model."
+  },
+
+  "Ultralytics YOLO Export": {
+    "prefix": "ultra.yolo-export",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "model = YOLO(\"${1:yolo11n.pt}\", task=\"${2|detect,segment,pose,obb,classify|}\")",
+      "out_file = model.export(",
+      "    format=\"${3|torchscript,onnx,openvino,engine,coreml,pb,tflite,edgetpu,tfjs,paddle,ncnn|}\",",
+      "    imgsz=${4:640},         # (int | list) input images size for exported model",
+      "    batch=${5:1},           # (int) batch size for exported model",
+      "    keras=${6|False,True|},       # (bool) use Keras",
+      "    optimize=${7|False,True|},    # (bool) TorchScript: optimize for mobile",
+      "    half=${8|False,True|},        # (bool) ONNX/TF/TensorRT: FP16 quantization",
+      "    int8=${9|False,True|},        # (bool) CoreML/TF/TensorRT/OpenVino INT8 quantization",
+      "    dynamic=${10|False,True|},     # (bool) ONNX/TF/TensorRT: dynamic axes",
+      "    simplify=${11|False,True|},    # (bool) ONNX: simplify model using `onnxslim`",
+      "    opset=${12:None},        # (int, optional) ONNX: opset version",
+      "    workspace=${13:4},       # (int) TensorRT: workspace size (GiB)",
+      "    nms=${14|False,True|},         # (bool) CoreML: add NMS",
+      ")",
+      "# reference https://docs.ultralytics.com/modes/export",
+      "$0"
+    ],
+    "description": "Export YOLO model weights to a new format."
+  },
+
+  "Ultralytics SAM Model": {
+    "prefix": "ultra.sam-model",
+    "body": [
+      "${1:model} = SAM(\"sam_${2|b,l|}.pt\")",
+      "# reference https://docs.ultralytics.com/models/sam/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize SAM."
+  },
+
+  "Ultralytics MobileSAM Model": {
+    "prefix": "ultra.mobileam-model",
+    "body": [
+      "${1:model} = SAM(\"mobile_sam${2|s,x|}.pt\")",
+      "# reference https://docs.ultralytics.com/models/mobile-sam/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize MobileSAM."
+  },
+
+  "Ultralytics FastSAM Model": {
+    "prefix": "ultra.fastam-model",
+    "body": [
+      "${1:model} = FastSAM(\"FastSAM-${2|s,x|}.pt\")",
+      "# reference https://docs.ultralytics.com/models/fast-sam/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize FastSAM."
+  },
+
+  "Ultralytics NAS Model": {
+    "prefix": "ultra.nas-model",
+    "body": [
+      "${1:model} = NAS(\"yolo_nas_${2|s,m,l|}.pt\")",
+      "# reference https://docs.ultralytics.com/models/yolo-nas",
+      "$0"
+    ],
+    "description": "Shortcut to initialize YOLO-NAS model."
+  },
+
+  "Ultralytics RTDETR Model": {
+    "prefix": "ultra.rtdetr-model",
+    "body": [
+      "${1:model} = RTDETR(\"rtdetr-${2|l,x|}.pt\")",
+      "# reference https://docs.ultralytics.com/models/rtdetr/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize RTDETR model."
+  },
+
+  "Ultralytics YOLO-World Model w/ Prompts": {
+    "prefix": "ultra.yolo-world-model",
+    "body": [
+      "${1:model} = YOLO(\"yolov8${2|s,m,l,x|}-${3|world,worldv2|}.pt\")",
+      "# configure custom classes with text prompts",
+      "$1.set_classes([${4:\"\"}])  # list of strings, with \"\" being a 'background' class",
+      "# reference https://docs.ultralytics.com/models/yolo-world/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize YOLO-World model with text prompts."
+  },
+
+  "Ultralytics SAM-2 Model w/ Box Prompts": {
+    "prefix": "ultra.sam2-bboxes",
+    "body": [
+      "${1:src}:str = \"${2:path/to/image.jpg}\"",
+      "${3:model} = SAM(\"sam2_${4|t,s,b,l|}.pt\")",
+      "",
+      "${5:boxes}:list[list[int]] = [${6:[0, 100, 20, 200], [100, 100, 200, 200],}]",
+      "",
+      "$results = $3($1, bboxes=$5)",
+      "",
+      "# reference https://docs.ultralytics.com/models/sam-2/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize YOLO-World model with text prompts."
+  },
+
+  "Ultralytics SAM-2 Model w/ Point Prompts": {
+    "prefix": "ultra.sam2-points",
+    "body": [
+      "${1:src}:str = \"${2:path/to/image.jpg}\"",
+      "${3:model} = SAM(\"sam2_${4|t,s,b,l|}.pt\")",
+      "",
+      "${5:pts}:list[list[int]] = [${6:[100, 20], [200, 200],}]",
+      "",
+      "results = $3($1, points=$5, labels=[${7:1}])",
+      "",
+      "# reference https://docs.ultralytics.com/models/sam-2/",
+      "$0"
+    ],
+    "description": "Shortcut to initialize YOLO-World model with text prompts."
+  },
+  "Import Model": {
+    "prefix": "ultra.import-model",
+    "body": "from ultralytics import $0${1|YOLO,SAM,RTDETR,FastSAM,NAS|}",
+    "description": "Add line to import an Ultralytics model class."
+  },
+
+  "Import Assets": {
+    "prefix": "ultra.import-assets",
+    "body": "from ultralytics import $0ASSETS",
+    "description": "Import Ultralytics ASSETS directory constant."
+  },
+
+  "Import Results": {
+    "prefix": "ultra.import-results",
+    "body": "from ultralytics.engine.results import Results",
+    "description": "Import Ultralytics Results class (usually for type hinting)."
+  },
+
+  "Import Task Results": {
+    "prefix": "ultra.import-task-result",
+    "body": "from ultralytics.engine.results import ${1|Boxes,Masks,Probs,Keypoints,OBB|}",
+    "description": "Import task-based results class (generally helpful for type hinting)."
+  },
+
+  "Import Annotator": {
+    "prefix": "ultra.import-annotator",
+    "body": "from ultralytics.data.annotator import auto_annotate",
+    "description": "Import Ultralytics auto_annotate function."
+  },
+
+  "Import COCO Converter": {
+    "prefix": "ultra.import-coco2yolo",
+    "body": "from ultralytics.data.converter import convert_coco",
+    "description": "Import Ultralytics function to convert annotations from COCO to YOLO format."
+  },
+
+  "Import Boxes-to-Segments Converter": {
+    "prefix": "ultra.import-bbox2seg",
+    "body": "from ultralytics.data.converter import yolo_bbox2segment",
+    "description": "Import Ultralytics function to convert horizontal bounding boxes to segmentation contours."
+  },
+
+  "Import Segments-to-Boxes Converter": {
+    "prefix": "ultra.import-seg2bbox",
+    "body": "from ultralytics.utils.ops import segments2boxes",
+    "description": "Import Ultralytics function to convert segmentation contours into horizontal bounding boxes."
+  },
+
+  "Import Ultralytics Box Conversion": {
+    "prefix": "ultra.import-box-convert",
+    "body": "from ultralytics.utils.ops import ${1|xywh2xyxy,xywhn2xyxy,xyxy2xywhn,xywh2ltwh,xyxy2ltwh,ltwh2xywh,ltwh2xyxy|}",
+    "description": "Import Ultralytics function for converting bounding box coordinates."
+  },
+
+  "Import Ultralytics Formats": {
+    "prefix": "ultra.import-formats",
+    "body": "from ultralytics.data.utils import ${1|IMG_FORMATS,VID_FORMATS|}",
+    "description": "Import Ultralytics supported file formats constant."
+  },
+  "Ultralytics YOLO Predict Keyword Arguments": {
+    "prefix": "ultra.kwargs-predict",
+    "body": [
+      "${1:model}.predict(",
+      "    source=${4:\"\"},            # (str, optional) source directory for images or videos",
+      "    imgsz=${5:640},            # (int | list) input images size as int or list[w,h] for predict",
+      "    conf=${6:0.25},            # (float) minimum confidence threshold",
+      "    iou=${7:0.7},              # (float) intersection over union (IoU) threshold for NMS",
+      "    device=${8|None,'cpu','cuda',0,[0]|},          # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu",
+      "    batch=${9:1},              # (int) batch size",
+      "    half=${10|False,True|},           # (bool) use FP16 half-precision inference",
+      "    max_det=${11:300},          # (int) Limits the maximum number of detections per image. Useful in dense scenes to prevent excessive detections.",
+      "    vid_stride=${12:1},         # (int) video frame-rate stride",
+      "    stream_buffer=${13|False,True|},  # (bool) buffer all streaming frames (True) or return the most recent frame (False)",
+      "    visualize=${14|False,True|},      # (bool) visualize model features",
+      "    augment=${15|False,True|},        # (bool) apply image augmentation to prediction sources",
+      "    agnostic_nms=${16|False,True|},   # (bool) class-agnostic NMS",
+      "    classes=${17:None},         # (int | list[int], optional) filter results by class, i.e. classes=0, or classes=[0,2,3]",
+      "    retina_masks=${18|False,True|},   # (bool) use high-resolution segmentation masks",
+      "    embed=${19:None},           # (list[int], optional) return feature vectors/embeddings from given layers",
+      "    show=${20|False,True|},           # (bool) show predicted images and videos if environment allows",
+      "    save=${21|True,False|},            # (bool) save prediction results",
+      "    save_frames=${22|False,True|},    # (bool) save predicted individual video frames",
+      "    save_txt=${23|False,True|},       # (bool) save results as .txt file",
+      "    save_conf=${24|False,True|},      # (bool) save results with confidence scores",
+      "    save_crop=${25|False,True|},      # (bool) save cropped images with results",
+      "    stream=${26|False,True|},         # (bool) for processing long videos or numerous images with reduced memory usage by returning a generator",
+      "    verbose=${27|True,False|},         # (bool) enable/disable verbose inference logging in the terminal",
+      ")$0"
+    ],
+    "description": "Snippet using model predict method, including all keyword arguments and defaults."
+  },
+
+  "Ultralytics Track Keyword Arguments": {
+    "prefix": "ultra.kwargs-track",
+    "body": [
+      "${1:model}.track(",
+      "    source=${4:\"\"},            # (str, optional) source directory for images or videos",
+      "    imgsz=${5:640},            # (int | list) input images size as int or list[w,h] for predict",
+      "    conf=${6:0.25},            # (float) minimum confidence threshold",
+      "    iou=${7:0.7},              # (float) intersection over union (IoU) threshold for NMS",
+      "    device=${8|None,'cpu','cuda',0,[0]|},          # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu",
+      "    batch=${9:1},              # (int) batch size",
+      "    half=${10|False,True|},           # (bool) use FP16 half-precision inference",
+      "    max_det=${11:300},          # (int) Limits the maximum number of detections per image. Useful in dense scenes to prevent excessive detections.",
+      "    persist=${12|False,True|},        # (bool) persist track-ids across frames",
+      "    tracker=\"${13|botsort,bytetrack|}\",    # (str) tracker type, choices=[botsort.yaml, bytetrack.yaml]",
+      "    vid_stride=${14:1},         # (int) video frame-rate stride",
+      "    stream_buffer=${15|False,True|},  # (bool) buffer all streaming frames (True) or return the most recent frame (False)",
+      "    visualize=${16|False,True|},      # (bool) visualize model features",
+      "    augment=${17|False,True|},        # (bool) apply image augmentation to prediction sources",
+      "    agnostic_nms=${18|False,True|},   # (bool) class-agnostic NMS",
+      "    classes=${19:None},         # (int | list[int], optional) filter results by class, i.e. classes=0, or classes=[0,2,3]",
+      "    retina_masks=${20|False,True|},   # (bool) use high-resolution segmentation masks",
+      "    embed=${21:None},           # (list[int], optional) return feature vectors/embeddings from given layers",
+      "    show=${22|False,True|},           # (bool) show predicted images and videos if environment allows",
+      "    save=${23|True,False|},            # (bool) save prediction results",
+      "    save_frames=${24|False,True|},    # (bool) save predicted individual video frames",
+      "    save_txt=${25|False,True|},       # (bool) save results as .txt file",
+      "    save_conf=${26|False,True|},      # (bool) save results with confidence scores",
+      "    save_crop=${27|False,True|},      # (bool) save cropped images with results",
+      "    stream=${28|False,True|},         # (bool) for processing long videos or numerous images with reduced memory usage by returning a generator",
+      "    verbose=${29|True,False|},         # (bool) enable/disable verbose inference logging in the terminal",
+      ")$0"
+    ],
+    "description": "Snippet using model track method, including all keyword arguments and defaults."
+  },
+
+  "Ultralytics YOLO Train Keyword Arguments": {
+    "prefix": "ultra.kwargs-train",
+    "body": [
+      "${1:model}.train(",
+      "    data=\"${4:coco8.yaml}\",           # (str, optional) path to data file, i.e. coco8.yaml",
+      "    epochs=${5:100},                  # (int) number of epochs to train for",
+      "    time=${6:None},                   # (float, optional) number of hours to train for, overrides epochs if supplied",
+      "    patience=${7:100},                # (int) epochs to wait for no observable improvement for early stopping of training",
+      "    batch=${8:16},                    # (int) number of images per batch (-1 for AutoBatch)",
+      "    imgsz=${9:640},                   # (int | list) input images size as int for train and val modes, or list[w,h] for predict and export modes",
+      "    save=${10|True,False|},                   # (bool) save train checkpoints and predict results",
+      "    save_period=${11:-1},              # (int) Save checkpoint every x epochs (disabled if < 1)",
+      "    cache=${12|False,True,'ram','disk'|},                 # (bool) True/ram, disk or False. Use cache for data loading",
+      "    device=${13|None,'cpu','cuda',0,[0]|},                 # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu",
+      "    workers=${14:8},                   # (int) number of worker threads for data loading (per RANK if DDP)",
+      "    project=${15:\"\"},                # (str, optional) project name",
+      "    name=${16:\"\"},                   # (str, optional) experiment name, results saved to 'project/name' directory",
+      "    exist_ok=${17|False,True|},              # (bool) whether to overwrite existing experiment",
+      "    val=${18|True,False|},                    # (bool) validate/test during training",
+      "    pretrained=${19|True,False|},             # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)",
+      "    optimizer=\"${20|SGD,Adam,Adamax,AdamW,NAdam,RAdam,RMSProp,auto|}\",             # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]",
+      "    verbose=${21|True,False|},                # (bool) whether to print verbose output",
+      "    seed=${22:0},                      # (int) random seed for reproducibility",
+      "    deterministic=${23|True,False|},          # (bool) whether to enable deterministic mode",
+      "    single_cls=${24|False,True|},            # (bool) train multi-class data as single-class",
+      "    rect=${25|False,True|},                  # (bool) rectangular training if mode='train' or rectangular validation if mode='val'",
+      "    cos_lr=${26|False,True|},                # (bool) use cosine learning rate scheduler",
+      "    close_mosaic=${27:10},             # (int) disable mosaic augmentation for final epochs (0 to disable)",
+      "    resume=${28|False,True|},                # (bool) resume training from last checkpoint",
+      "    amp=${29|True,False|},                    # (bool) Automatic Mixed Precision (AMP) training, choices=[True, False], True runs AMP check",
+      "    fraction=${30:1.0},                # (float) dataset fraction to train on (default is 1.0, all images in train set)",
+      "    profile=${31|False,True|},               # (bool) profile ONNX and TensorRT speeds during training for loggers",
+      "    freeze=${32:None},                 # (int | list, optional) freeze first n layers, or freeze list of layer indices during training",
+      "    multi_scale=${33|False,True|},           # (bool) Whether to use multiscale during training",
+      "    plots=${34|True,False|},                  # (bool) save plots and images during train/val",
+      "    # Segmentation",
+      "    overlap_mask=${35|True,False|},           # (bool) masks should overlap during training (segment train only)",
+      "    mask_ratio=${36:4},                # (int) mask downsample ratio (segment train only)",
+      "    # Classification",
+      "    dropout=${37:0.0},                 # (float) use dropout regularization (classify train only)",
+      "    # Hyperparameters",
+      "    lr0=${38:0.01},                    # (float) initial learning rate (i.e. SGD=1E-2, Adam=1E-3)",
+      "    lrf=${39:0.01},                    # (float) final learning rate (lr0 * lrf)",
+      "    momentum=${40:0.937},              # (float) SGD momentum/Adam beta1",
+      "    weight_decay=${41:0.0005},         # (float) optimizer weight decay 5e-4",
+      "    warmup_epochs=${42:3.0},           # (float) warmup epochs (fractions ok)",
+      "    warmup_momentum=${43:0.8},         # (float) warmup initial momentum",
+      "    warmup_bias_lr=${44:0.1},          # (float) warmup initial bias lr",
+      "    box=${45:7.5},                     # (float) box loss gain",
+      "    cls=${46:0.5},                     # (float) cls loss gain (scale with pixels)",
+      "    dfl=${47:1.5},                     # (float) dfl loss gain",
+      "    pose=${48:12.0},                   # (float) pose loss gain",
+      "    kobj=${49:1.0},                    # (float) keypoint obj loss gain",
+      "    label_smoothing=${50:0.0},         # (float) label smoothing (fraction)",
+      "    nbs=${51:64},                      # (int) nominal batch size",
+      "    hsv_h=${52:0.015},                 # (float) image HSV-Hue augmentation (fraction)",
+      "    hsv_s=${53:0.7},                   # (float) image HSV-Saturation augmentation (fraction)",
+      "    hsv_v=${54:0.4},                   # (float) image HSV-Value augmentation (fraction)",
+      "    degrees=${55:0.0},                 # (float) image rotation (+/- deg)",
+      "    translate=${56:0.1},               # (float) image translation (+/- fraction)",
+      "    scale=${57:0.5},                   # (float) image scale (+/- gain)",
+      "    shear=${58:0.0},                   # (float) image shear (+/- deg)",
+      "    perspective=${59:0.0},             # (float) image perspective (+/- fraction), range 0-0.001",
+      "    flipud=${60:0.0},                  # (float) image flip up-down (probability)",
+      "    fliplr=${61:0.5},                  # (float) image flip left-right (probability)",
+      "    bgr=${62:0.0},                     # (float) image channel BGR (probability)",
+      "    mosaic=${63:1.0},                  # (float) image mosaic (probability)",
+      "    mixup=${64:0.0},                   # (float) image mixup (probability)",
+      "    copy_paste=${65:0.0},              # (float) segment copy-paste (probability)",
+      "    auto_augment=\"${66|randaugment,autoaugment,augmix|}\",  # (str) auto augmentation policy for classification (randaugment, autoaugment, augmix)",
+      "    erasing=${67:0.4},                 # (float) probability of random erasing during classify training [0-0.9], 0 is no erasing, must be < 1.0.",
+      "    crop_fraction=${68:1.0},           # (float) image crop fraction for classification [0.1-1], 1.0 is no crop, must be > 0.",
+      ")$0"
+    ],
+    "description": "Snippet using model train method, including all keyword arguments and defaults."
+  },
+
+  "Ultralytics YOLO Validation Keyword Arguments": {
+    "prefix": "ultra.kwargs-val",
+    "body": [
+      "${1:model}.val(",
+      "    data=\"${2:coco8.yaml}\",  # (str) Specifies the path to the dataset configuration file (e.g., coco8.yaml).",
+      "    imgsz=${3:640},          # (int) Defines the size of input images. All images are resized to this dimension before processing.",
+      "    batch=${4:16},           # (int) Sets the number of images per batch. Use -1 for AutoBatch, which automatically adjusts based on GPU memory availability.",
+      "    save_json=${5|False,True|},    # (bool) If True, saves the results to a JSON file for further analysis or integration with other tools.",
+      "    save_hybrid=${6|False,True|},  # (bool) If True, saves a hybrid version of labels that combines original annotations with additional model predictions.",
+      "    conf=${7:0.001},         # (float) Sets the minimum confidence threshold for detections. Detections with confidence below this threshold are discarded.",
+      "    iou=${8:0.6},            # (float) Sets the Intersection Over Union (IoU) threshold for Non-Maximum Suppression (NMS). Helps in reducing duplicate detections.",
+      "    max_det=${9:300},        # (int) Limits the maximum number of detections per image. Useful in dense scenes to prevent excessive detections.",
+      "    half=${10|True,False|},          # (bool) Enables half-precision (FP16) computation, reducing memory usage and potentially increasing speed with minimal impact on accuracy.",
+      "    device=${11|None,'cpu','cuda',0|},        # (str | int) Specifies the device for validation (cpu, cuda:0, etc.). Allows flexibility in utilizing CPU or GPU resources.",
+      "    dnn=${12|False,True|},          # (bool) If True, uses the OpenCV DNN module for ONNX model inference, offering an alternative to PyTorch inference methods.",
+      "    plots=${13|False,True|},        # (bool) When set to True, generates and saves plots of predictions versus ground truth for visual evaluation of the model's performance.",
+      "    rect=${14|False,True|},         # (bool) If True, uses rectangular inference for batching, reducing padding and potentially increasing speed and efficiency.",
+      "    split=\"${15|val,test,train|}\",        # (str) Determines the dataset split to use for validation (val, test, or train).",
+      ")$0"
+    ],
+    "description": "Snippet using model val method, including all keyword arguments and defaults."
+  },
+  "Ultralytics Predict Filter Classes": {
+    "prefix": "ultra.example-predict-filter-class",
+    "body": [
+      "from ultralytics import YOLO, ASSETS",
+      "",
+      "model = YOLO(\"yolo11${1|n,s,m,l,x|}.pt\", task=\"detect\")",
+      "results = model(source=ASSETS / \"bus.jpg\", classes=[0, 5])  # keep person and bus classes only",
+      "",
+      "for result in results:",
+      "    print(result.boxes.data)",
+      "    # result.show()  # uncomment to view each result image",
+      "    $0",
+      "    # reference https://docs.ultralytics.com/modes/predict/ for more information."
+    ],
+    "description": "Ultralytics basic YOLO object detection predict with filtered classes example."
+  },
+
+  "Ultralytics Predict Example": {
+    "prefix": "ultra.example-yolo-predict",
+    "body": [
+      "from ultralytics import YOLO, ASSETS",
+      "",
+      "model = YOLO(\"yolo11${1|n,s,m,l,x|}.pt\", task=\"detect\")",
+      "results = model(source=ASSETS / \"bus.jpg\")",
+      "",
+      "for result in results:",
+      "    print(result.boxes.data)",
+      "    # result.show()  # uncomment to view each result image",
+      "    $0",
+      "    # reference https://docs.ultralytics.com/modes/predict/ for more information."
+    ],
+    "description": "Ultralytics basic YOLO object detection predict example."
+  },
+
+  "Ultralytics YOLO Validation": {
+    "prefix": "ultra.example-yolo-val",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "'''",
+      "⚠ NOTE: selections do not prevent you from specifying a combination for a model that doesn't exist.",
+      "Reference the documentation for valid model specifications: https://docs.ultralytics.com/models",
+      "'''",
+      "my_data = \"${1:coco8.yaml}\"",
+      "model = YOLO(\"yolo${2|11,v8,v5,v9,v10|}${3|n,s,m,l,x,c,e|}${4|.,-cls.,-seg.,-obb.,-pose.,-world.,-worldv2.|}pt\")",
+      "results = model.val(data=my_data)",
+      "# reference https://docs.ultralytics.com/modes/val/"
+    ],
+    "description": "Setup Ultralytics YOLO to perform validation."
+  },
+
+  "Ultralytics YOLO Train": {
+    "prefix": "ultra.example-yolo-train",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "'''",
+      "⚠ NOTE: selections do not prevent you from specifying a combination for a model that doesn't exist.",
+      "Reference the documentation for valid model specifications: https://docs.ultralytics.com/models",
+      "'''",
+      "my_data = \"${1:coco8.yaml}\"",
+      "model = YOLO(\"yolo${2|11,v8,v5,v9,v10|}${3|n,s,m,l,x,c,e|}${4|.,-cls.,-seg.,-obb.,-pose.,-world.,-worldv2.|}pt\")",
+      "results = model.train(data=my_data)",
+      "# reference https://docs.ultralytics.com/modes/train/"
+    ],
+    "description": "Setup Ultralytics YOLO to perform training."
+  },
+
+  "Ultralytics SAM Predict": {
+    "prefix": "ultra.example-sam-predict",
+    "body": [
+      "from ultralytics import SAM",
+      "",
+      "src = ${1:None}",
+      "model = SAM(\"${2:sam_}${3|b,l|}.pt\")",
+      "results: list = model.predict(source=src)",
+      "# reference https://docs.ultralytics.com/models/sam/"
+    ],
+    "description": "Setup Ultralytics SAM to perform inference."
+  },
+
+  "Ultralytics MobileSAM Predict": {
+    "prefix": "ultra.example-mobile-sam-predict",
+    "body": [
+      "from ultralytics import SAM",
+      "",
+      "src = ${1:None}",
+      "model = SAM(\"mobile_sam.pt\")",
+      "results: list = model.predict(source=src)",
+      "# reference https://docs.ultralytics.com/models/mobile-sam/"
+    ],
+    "description": "Setup Ultralytics MobileSAM to perform inference."
+  },
+
+  "Ultralytics FastSAM Predict": {
+    "prefix": "ultra.example-fast-sam-predict",
+    "body": [
+      "from ultralytics import FastSAM",
+      "# from ultralytics.models.fastsam import FastSAMPrompt",
+      "",
+      "src = ${1:None}",
+      "model = FastSAM(\"FastSAM-${2|s,x|}.pt\")",
+      "results: list = model.predict(source=src)",
+      "# reference https://docs.ultralytics.com/models/fast-sam/"
+    ],
+    "description": "Setup Ultralytics FastSAM to perform inference."
+  },
+
+  "Ultralytics NAS Predict": {
+    "prefix": "ultra.example-nas-predict",
+    "body": [
+      "from ultralytics import NAS",
+      "",
+      "src = ${1:None}",
+      "model = NAS(\"yolo_nas_${2|s,m,l|}.pt\")",
+      "results: list = model.predict(source=src)",
+      "# reference https://docs.ultralytics.com/models/yolo-nas"
+    ],
+    "description": "Setup Ultralytics NAS to perform inference."
+  },
+
+  "Ultralytics RT-DETR Predict": {
+    "prefix": "ultra.example-rtdetr-predict",
+    "body": [
+      "from ultralytics import RTDETR",
+      "",
+      "src = ${1:None}",
+      "model = RTDETR(\"rtdetr-${2|l,x|}.pt\")",
+      "results: list = model.predict(source=src)",
+      "# reference https://docs.ultralytics.com/models/rtdetr/"
+    ],
+    "description": "Setup Ultralytics RT-DETR to perform inference."
+  },
+
+  "Ultralytics Results Filter by Class": {
+    "prefix": "ultra.example-result-filter-class",
+    "body": [
+      "import numpy as np",
+      "from ultralytics import YOLO, ASSETS",
+      "from ultralytics.engine.results import Results, Boxes",
+      "",
+      "# NOTE class filtering should generally use the \"classes\" prediction argument.",
+      "# reference https://docs.ultralytics.com/modes/predict/#inference-arguments",
+      "",
+      "keep_classes = ${1:[0, 5]}  # person and bus classes",
+      "",
+      "model = YOLO(\"yolo11${2|n,s,m,l,x|}.pt\")",
+      "results:list[Results] = model.predict(ASSETS / \"bus.jpg\")  # use classes=$1 for filtering during prediction",
+      "",
+      "detections:Boxes = results[0].boxes.cpu().numpy()  # allows for access to all methods defined in Boxes",
+      "filtered_detections:Boxes = detections[np.isin(detections.cls, keep_classes)]  # limit results to keep_classes only"
+    ],
+    "description": "Filter prediction results by class ID. Using \"classes\" keyword argument for prediction should be preferred."
+  },
+
+  "Ultralytics YOLO Predict with keywords": {
+    "prefix": "ultra.example-yolo-predict-kwords",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "'''",
+      "⚠ NOTE: selections do not prevent you from specifying a combination for a model that doesn't exist.",
+      "Reference the documentation for valid model specifications: https://docs.ultralytics.com/models",
+      "'''",
+      "src=${1:None}",
+      "model = YOLO(\"yolo${2|11,v8,v5,v9,v10|}${3|n,s,m,l,x,c,e|}${4|.,-cls.,-seg.,-obb.,-pose.,-world.,-worldv2.|}pt\")",
+      "results: list = model.predict(",
+      "    source=src,                # (str, optional) source directory for images or videos",
+      "    imgsz=${5:640},            # (int | list) input images size as int or list[w,h] for predict",
+      "    conf=${6:0.25},            # (float) minimum confidence threshold",
+      "    iou=${7:0.7},              # (float) intersection over union (IoU) threshold for NMS",
+      "    vid_stride=${8:1},         # (int) video frame-rate stride",
+      "    stream_buffer=${9:False},  # (bool) buffer all streaming frames (True) or return the most recent frame (False)",
+      "    visualize=${10:False},     # (bool) visualize model features",
+      "    augment=${11:False},       # (bool) apply image augmentation to prediction sources",
+      "    agnostic_nms=${12:False},  # (bool) class-agnostic NMS",
+      "    classes=${13:None},        # (int | list[int], optional) filter results by class, i.e. classes=0, or classes=[0,2,3]",
+      "    retina_masks=${14:False},  # (bool) use high-resolution segmentation masks",
+      "    embed=${15:None},          # (list[int], optional) return feature vectors/embeddings from given layers",
+      "    show=${16:False},          # (bool) show predicted images and videos if environment allows",
+      "    save=${17:True},           # (bool) save prediction results",
+      "    save_frames=${18:False},   # (bool) save predicted individual video frames",
+      "    save_txt=${19:False},      # (bool) save results as .txt file",
+      "    save_conf=${20:False},     # (bool) save results with confidence scores",
+      "    save_crop=${21:False},     # (bool) save cropped images with results",
+      "    stream=${22:False},        # (bool) for processing long videos or numerous images with reduced memory usage by returning a generator",
+      "    verbose=${23:True},        # (bool) enable/disable verbose inference logging in the terminal",
+      ")",
+      "# reference https://docs.ultralytics.com/modes/predict/"
+    ],
+    "description": "Setup Ultralytics YOLO to perform inference, show all inference keyword arguments and their default values."
+  },
+
+  "Ultralytics YOLO Train with keywords": {
+    "prefix": "ultra.example-yolo-train-kwords",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "'''",
+      "⚠ NOTE: selections do not prevent you from specifying a combination for a model that doesn't exist.",
+      "Reference the documentation for valid model specifications: https://docs.ultralytics.com/models",
+      "'''",
+      "model = YOLO(\"yolo${1|11,v8,v5,v9,v10|}${2|n,s,m,l,x,c,e|}${3|.,-cls.,-seg.,-obb.,-pose.,-world.,-worldv2.|}pt\")",
+      "results: list = model.train(",
+      "    data=\"${4:coco8.yaml}\",      # (str, optional) path to data file, i.e. coco8.yaml",
+      "    epochs=${5:100},             # (int) number of epochs to train for",
+      "    time=${6:None},              # (float, optional) number of hours to train for, overrides epochs if supplied",
+      "    patience=${7:100},           # (int) epochs to wait for no observable improvement for early stopping of training",
+      "    batch=${8:16},               # (int) number of images per batch (-1 for AutoBatch)",
+      "    imgsz=${9:640},              # (int | list) input images size as int for train and val modes, or list[w,h] for predict and export modes",
+      "    save=${10:True},              # (bool) save train checkpoints and predict results",
+      "    save_period=${11:-1},         # (int) Save checkpoint every x epochs (disabled if < 1)",
+      "    cache=${12:False},            # (bool) True/ram, disk or False. Use cache for data loading",
+      "    device=${13:None},            # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu",
+      "    workers=${14:8},              # (int) number of worker threads for data loading (per RANK if DDP)",
+      "    project=${15:None},           # (str, optional) project name",
+      "    name=${16:None},              # (str, optional) experiment name, results saved to 'project/name' directory",
+      "    exist_ok=${17:False},         # (bool) whether to overwrite existing experiment",
+      "    val=${18:True},               # (bool) validate/test during training",
+      "    pretrained=${19:True},        # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)",
+      "    optimizer=\"${20|SGD,Adam,Adamax,AdamW,NAdam,RAdam,RMSProp,auto|}\",        # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]",
+      "    verbose=${21:True},           # (bool) whether to print verbose output",
+      "    seed=${22:0},                 # (int) random seed for reproducibility",
+      "    deterministic=${23:True},     # (bool) whether to enable deterministic mode",
+      "    single_cls=${24:False},       # (bool) train multi-class data as single-class",
+      "    rect=${25:False},             # (bool) rectangular training if mode='train' or rectangular validation if mode='val'",
+      "    cos_lr=${26:False},           # (bool) use cosine learning rate scheduler",
+      "    close_mosaic=${27:10},        # (int) disable mosaic augmentation for final epochs (0 to disable)",
+      "    resume=${28:False},           # (bool) resume training from last checkpoint",
+      "    amp=${29:True},               # (bool) Automatic Mixed Precision (AMP) training, choices=[True, False], True runs AMP check",
+      "    fraction=${30:1.0},           # (float) dataset fraction to train on (default is 1.0, all images in train set)",
+      "    profile=${31:False},          # (bool) profile ONNX and TensorRT speeds during training for loggers",
+      "    freeze=${32:None},            # (int | list, optional) freeze first n layers, or freeze list of layer indices during training",
+      "    multi_scale=${33:False},      # (bool) Whether to use multiscale during training",
+      "    plots=${34:True},              # (bool) save plots and images during train/val",
+      "    # Segmentation",
+      "    overlap_mask=${35:True},      # (bool) masks should overlap during training (segment train only)",
+      "    mask_ratio=${36:4},           # (int) mask downsample ratio (segment train only)",
+      "    # Classification",
+      "    dropout=${37:0.0},            # (float) use dropout regularization (classify train only)",
+      "    # Hyperparameters",
+      "    lr0=${38:0.01},                   # (float) initial learning rate (i.e. SGD=1E-2, Adam=1E-3)",
+      "    lrf=${39:0.01},                   # (float) final learning rate (lr0 * lrf)",
+      "    momentum=${40:0.937},             # (float) SGD momentum/Adam beta1",
+      "    weight_decay=${41:0.0005},        # (float) optimizer weight decay 5e-4",
+      "    warmup_epochs=${42:3.0},          # (float) warmup epochs (fractions ok)",
+      "    warmup_momentum=${43:0.8},        # (float) warmup initial momentum",
+      "    warmup_bias_lr=${44:0.1},         # (float) warmup initial bias lr",
+      "    box=${45:7.5},                    # (float) box loss gain",
+      "    cls=${46:0.5},                    # (float) cls loss gain (scale with pixels)",
+      "    dfl=${47:1.5},                    # (float) dfl loss gain",
+      "    pose=${48:12.0},                  # (float) pose loss gain",
+      "    kobj=${49:1.0},                   # (float) keypoint obj loss gain",
+      "    label_smoothing=${50:0.0},        # (float) label smoothing (fraction)",
+      "    nbs=${51:64},                     # (int) nominal batch size",
+      "    hsv_h=${52:0.015},                # (float) image HSV-Hue augmentation (fraction)",
+      "    hsv_s=${53:0.7},                  # (float) image HSV-Saturation augmentation (fraction)",
+      "    hsv_v=${54:0.4},                  # (float) image HSV-Value augmentation (fraction)",
+      "    degrees=${55:0.0},                # (float) image rotation (+/- deg)",
+      "    translate=${56:0.1},              # (float) image translation (+/- fraction)",
+      "    scale=${57:0.5},                  # (float) image scale (+/- gain)",
+      "    shear=${58:0.0},                  # (float) image shear (+/- deg)",
+      "    perspective=${59:0.0},            # (float) image perspective (+/- fraction), range 0-0.001",
+      "    flipud=${60:0.0},                 # (float) image flip up-down (probability)",
+      "    fliplr=${61:0.5},                 # (float) image flip left-right (probability)",
+      "    bgr=${62:0.0},                    # (float) image channel BGR (probability)",
+      "    mosaic=${63:1.0},                 # (float) image mosaic (probability)",
+      "    mixup=${64:0.0},                  # (float) image mixup (probability)",
+      "    copy_paste=${65:0.0},             # (float) segment copy-paste (probability)",
+      "    auto_augment=\"${66|randaugment,autoaugment,augmix|}\", # (str) auto augmentation policy for classification (randaugment, autoaugment, augmix)",
+      "    erasing=${67:0.4},                # (float) probability of random erasing during classification training [0-0.9], 0 is no erasing, must be < 1.0.",
+      "    crop_fraction=${68:1.0},          # (float) image crop fraction for classify [0.1-1], 1.0 is no cropping, must be > 0.",
+      ")",
+      "# reference https://docs.ultralytics.com/modes/train/"
+    ],
+    "description": "Setup Ultralytics YOLO for training, with all keyword arguments and their default values."
+  },
+
+  "Ultralytics Add Custom Callback": {
+    "prefix": "ultra.example-callback",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "model = YOLO(\"${1:yolo11n.pt}\")",
+      "",
+      "def ${2:callback_function}():",
+      "    ${3:pass}",
+      "",
+      "model.add_callback(\"${4|on_pretrain_routine_start,on_pretrain_routine_end,on_train_start,on_train_epoch_start,on_train_batch_start,optimizer_step,on_before_zero_grad,on_train_batch_end,on_train_epoch_end,on_fit_epoch_end,on_model_save,on_train_end,on_params_update,teardown,on_val_start,on_val_batch_start,on_val_batch_end,on_val_end,on_predict_start,on_predict_batch_start,on_predict_postprocess_end,on_predict_batch_end,on_predict_end,on_export_start,on_export_end|}\", $2)",
+      "# See docs page on callbacks https://docs.ultralytics.com/usage/callbacks/ for more information"
+    ],
+    "description": "Example showing how to add a custom callback function."
+  },
+
+  "Ultralytics SAM2 Examples": {
+    "prefix": "ultra.example-sam2",
+    "body": [
+      "from ultralytics import ASSETS, SAM",
+      "",
+      "model = SAM(\"sam2_${1|t,s,b,l|}.pt\")",
+      "",
+      "# SAM2 with bounding box prompts",
+      "${2:boxes}:list[list[int]] = [${3:[0, 100, 20, 200], [100, 100, 200, 200],}]",
+      "",
+      "box_results = model(ASSETS / \"bus.jpg\", bboxes=$2)",
+      "",
+      "# SAM2 with point prompts",
+      "${4:pts}:list[list[int]] = [${5:[150, 200], [25, 430],}]",
+      "pt_results = model(ASSETS/ \"bus.jpg\", points=$4, labels=[1])",
+      "",
+      "# See docs page about SAM2 https://docs.ultralytics.com/models/sam-2 for more information"
+    ],
+    "description": "Example showing use of SAM2 with bounding box and point prompts."
+  },
+
+  "Ultralytics Track Looping Frames with Persistence": {
+    "prefix": "ultra.example-track-loop-persist",
+    "body": [
+      "import cv2",
+      "",
+      "from ultralytics import YOLO",
+      "",
+      "# Load the yolo11 model",
+      "model = YOLO(\"yolo11${1|n,s,m,l,x|}.pt\", task=\"detect\")",
+      "",
+      "# Open the video file",
+      "video_path = \"${2:path/to/video.mp4}\"",
+      "cap = cv2.VideoCapture(video_path)",
+      "",
+      "# Loop through the video frames",
+      "while cap.isOpened():",
+      "    # Read a frame from the video",
+      "    success, frame = cap.read()",
+      "",
+      "    if success:",
+      "        # Run yolo11 tracking on the frame, persisting tracks between frames",
+      "        results = model.track(frame, persist=True)",
+      "",
+      "        # Visualize the results on the frame",
+      "        annotated_frame = results[0].plot()",
+      "",
+      "        # Display the annotated frame",
+      "        cv2.imshow(\"yolo11 Tracking\", annotated_frame)",
+      "",
+      "        # Break the loop if 'q' is pressed",
+      "        if cv2.waitKey(1) & 0xFF == ord(\"q\"):",
+      "            break",
+      "    else:",
+      "        # Break the loop if the end of the video is reached",
+      "        break",
+      "",
+      "# Release the video capture object and close the display window",
+      "cap.release()",
+      "cv2.destroyAllWindows()",
+      "# reference https://docs.ultralytics.com/modes/track/",
+      "$0"
+    ],
+    "description": "Example of how to open video, loop frames, and maintain tracked object IDs."
+  },
+
+  "Ultralytics Track with all Keywords": {
+    "prefix": "ultra.example-track-kwords",
+    "body": [
+      "from ultralytics import YOLO",
+      "",
+      "src=\"${1:https://youtu.be/LNwODJXcvt4}\"",
+      "model = YOLO(\"yolo11${2|n,s,m,l,x|}${3|.,-seg.,-obb.,-pose.|}pt\")",
+      "results = model.track(",
+      "    source=src,           # (str, optional) source directory for images or videos",
+      "    imgsz=${5:640},            # (int | list) input images size as int or list[w,h] for predict",
+      "    conf=${6:0.25},            # (float) minimum confidence threshold",
+      "    iou=${7:0.7},              # (float) intersection over union (IoU) threshold for NMS",
+      "    persist=${8:False},        # (bool) persist track-ids across frames",
+      "    tracker=\"${9|botsort,bytetrack|}\",   # (str) tracker type, choices=[botsort.yaml, bytetrack.yaml]",
+      "    vid_stride=${10:1},        # (int) video frame-rate stride",
+      "    stream_buffer=${11:False}, # (bool) buffer all streaming frames (True) or return the most recent frame (False)",
+      "    visualize=${12:False},     # (bool) visualize model features",
+      "    augment=${13:False},       # (bool) apply image augmentation to prediction sources",
+      "    agnostic_nms=${14:False},  # (bool) class-agnostic NMS",
+      "    classes=${15:None},        # (int | list[int], optional) filter results by class, i.e. classes=0, or classes=[0,2,3]",
+      "    retina_masks=${16:False},  # (bool) use high-resolution segmentation masks",
+      "    embed=${17:None},          # (list[int], optional) return feature vectors/embeddings from given layers",
+      "    show=${18:False},          # (bool) show predicted images and videos if environment allows",
+      "    save=${19:True},           # (bool) save prediction results",
+      "    save_frames=${20:False},   # (bool) save predicted individual video frames",
+      "    save_txt=${21:False},      # (bool) save results as .txt file",
+      "    save_conf=${20:False},     # (bool) save results with confidence scores",
+      "    save_crop=${21:False},     # (bool) save cropped images with results",
+      "    stream=${22:False},        # (bool) for processing long videos or numerous images with reduced memory usage by returning a generator",
+      "    verbose=${23:True},        # (bool) enable/disable verbose inference logging in the terminal",
+      ")",
+      "# reference https://docs.ultralytics.com/modes/track/",
+      "# reference https://docs.ultralytics.com/modes/predict/ (tracking accepts same keyword arguments as predict)",
+      "$0"
+    ],
+    "description": "Example showing all keyword arguments available for track mode."
+  }
+}

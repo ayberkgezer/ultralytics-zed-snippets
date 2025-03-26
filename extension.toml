@@ -1,0 +1,8 @@
+id = "ultralytics-zed-snippets"
+name = "Ultralytics Zed Snippets"
+version = "0.0.2"
+schema_version = 1
+authors = ["Ayberk Gezer <ayberkgezer@outlook.com>"]
+description = "Ultralytics snippets for Zed IDE."
+repository = "https://github.com/ayberkgezer/ultralytics-zed-snippets"
+snippets = "./snippets/python.json"
