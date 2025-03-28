@@ -1,5 +1,5 @@
-id = "ultralytics-zed-snippets"
-name = "Ultralytics Zed Snippets"
+id = "ultralytics-snippets"
+name = "Ultralytics Snippets"
 version = "0.0.2"
 schema_version = 1
 authors = ["Ayberk Gezer <ayberkgezer@outlook.com>"]
